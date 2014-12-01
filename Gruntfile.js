@@ -25,26 +25,27 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp']
+      tests: ['.dockertimes.json', 'tmp']
+    },
+
+    // Before testing, copy some test files in place
+    copy: {
+      test: {
+        files: [
+          {expand:true, src:['test/fixtures/testfile.txt'], dest: 'tmp/dist'},
+          {expand:false, src:['test/fixtures/dockertimes.json'], dest: '.dockertimes.json'},
+          {expand:true, src:['test/fixtures/testfile.txt'], dest: 'tmp/subtest/dist'}
+        ]
+      }
     },
 
     // Configuration to be run (and then tested).
     dockertimes: {
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      },
+      files: ['tmp/dist/**'],
       custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+        cache: 'tmp/subtest/.dockertimes',
+        cwd: 'tmp/subtest',
+        files: ['dist/**']
       }
     },
 
@@ -62,10 +63,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'dockertimes', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'copy:test', 'dockertimes', 'dockertimes:custom_options', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

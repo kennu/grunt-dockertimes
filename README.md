@@ -1,6 +1,6 @@
 # grunt-dockertimes
 
-> Persistent file timestamps for Docker image building
+> Persist file timestamps for Docker image building.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -37,31 +37,23 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
-
-A string value that is used to do something with whatever.
-
-#### options.punctuation
+#### options.path
 Type: `String`
 Default value: `'.'`
 
-A string value that is used to do something else with whatever else.
+The path of the directory, in which file timestamps will be processed.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+In this example, the entire project directory (containing Gruntfile.js) is
+processed.
 
 ```js
 grunt.initConfig({
   dockertimes: {
     options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+  }
 });
 ```
 
