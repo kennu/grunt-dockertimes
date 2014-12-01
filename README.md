@@ -2,10 +2,10 @@
 
 > Persist file timestamps for Docker image builds.
 
-This plugin will store all mtime timestamps and SHA1 hashes of your project
-files into a cache file called .dockertimes.json. When run again later, it will
-scan the cache file and restore the original mtime timestamps of any files whose
-contents still match the original SHA1 hash.
+This plugin will store the mtime timestamps and SHA1 hashes of your project
+files into a cache file called .dockertimes.json. When the plugin is executed
+again later, it will scan the cache file and restore the original mtime
+timestamps of any files whose contents still match the original SHA1 hash.
 
 The purpose of this operation is to ensure that Docker does not generate a new
 image layer when you ADD unmodified files in your Dockerfile. Docker considers
