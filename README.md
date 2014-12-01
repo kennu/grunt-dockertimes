@@ -1,6 +1,16 @@
 # grunt-dockertimes
 
-> Persist file timestamps for Docker image building.
+> Persist file timestamps for Docker image builds.
+
+This plugin will store all mtime timestamps and SHA1 hashes of your project
+files into a cache file called .dockertimes.json. When run again later, it will
+scan the cache file and restore the original mtime timestamps of any files whose
+contents still match the original SHA1 hash.
+
+The purpose of this operation is to ensure that Docker does not generate a new
+image layer when you ADD unmodified files in your Dockerfile. Docker considers
+both the file contents and the mtime timestamps when determining which files
+have changed.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -25,11 +35,13 @@ In your project's Gruntfile, add a section named `dockertimes` to the data objec
 ```js
 grunt.initConfig({
   dockertimes: {
-    options: {
-      // Task-specific options go here.
-    },
+    // Default target
+    files: ['dist/**']
     your_target: {
       // Target-specific file lists and/or options go here.
+      cwd: 'build',
+      cache: 'build/.dockertimes.json'
+      files: ['another_dir/**']
     },
   },
 });
@@ -37,39 +49,42 @@ grunt.initConfig({
 
 ### Options
 
-#### options.path
+#### cwd
 Type: `String`
 Default value: `'.'`
 
-The path of the directory, in which file timestamps will be processed.
+The files paths will be expanded relative to this directory. Note however that
+the cache file will _not_ be relative to this directory.
+
+#### cache
+Type: `String`
+Default value: `'.dockertimes.json'`
+
+The timestamp and SHA1 hash cache is stored in the specified file.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the entire project directory (containing Gruntfile.js) is
-processed.
+In this example, the dist directory is processed with default options.
 
 ```js
 grunt.initConfig({
   dockertimes: {
-    options: {},
+    files: 'dist/**'
   }
 });
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+In this example, the dist directory is processed, relative to build, which is
+used as the current directory. The cache file is stored in the build directory.
 
 ```js
 grunt.initConfig({
   dockertimes: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    cwd: 'build',
+    cache: 'build/.dockertimes.json',
+    files: 'dist/**'
   },
 });
 ```
@@ -78,4 +93,5 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+
+* 0.1.0 Initial version.
