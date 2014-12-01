@@ -12,6 +12,11 @@ image layer when you ADD unmodified files in your Dockerfile. Docker considers
 both the file contents and the mtime timestamps when determining which files
 have changed.
 
+You should place the dockertimes operation at the end of your Grunt build task,
+to ensure that all files are processed:
+
+    grunt.registerTask('build', ['all_build_operations...', '...', 'dockertimes']);
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 
@@ -73,6 +78,8 @@ grunt.initConfig({
     files: 'dist/**'
   }
 });
+
+grunt.registerTask('build', ['all_build_operations...', '...', 'dockertimes']);
 ```
 
 #### Custom Options
@@ -87,6 +94,8 @@ grunt.initConfig({
     files: 'dist/**'
   },
 });
+
+grunt.registerTask('build', ['all_build_operations...', '...', 'dockertimes']);
 ```
 
 ## Contributing
