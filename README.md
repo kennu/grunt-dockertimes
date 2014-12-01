@@ -15,7 +15,15 @@ have changed.
 You should place the dockertimes operation at the end of your Grunt build task,
 to ensure that all files are processed:
 
-    grunt.registerTask('build', ['all_build_operations...', '...', 'dockertimes']);
+```js
+grunt.initConfig({
+  ...
+  dockertimes: {
+    files: 'dist/**'
+  }
+});
+grunt.registerTask('build', ['build_into_dist...', '...', 'dockertimes']);
+```
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
